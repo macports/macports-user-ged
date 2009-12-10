@@ -1,31 +1,33 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
 # $Id$
 PortSystem		1.0
 
-name			cfengine
-version			2.2.1
-revision		1
-categories		sysutils
-maintainers		nomaintainer
-description		a tool for setting up and maintaining computer systems
-long_description	Cfengine, or the configuration engine is an \
-					autonomous agent and a middle to high level \
-					policy language for building expert systems \
-					which administrate and configure large computer \
-					networks. 
-homepage		http://www.cfengine.org/
-master_sites	ftp://ftp.iu.hio.no/pub/cfengine/ \
-				ftp://sunsite.uio.no/pub/cfengine/ \
-				http://ftp.us.xemacs.org/ftp/pub/cfengine/cfengine-ftp/
-checksums		sha1 ce4954174110c43541d25775747ae65ada30063d
-platforms		darwin
-
-depends_lib		port:db44 \
-				port:openssl \
-				port:pcre
-
-patchfiles		patch-pub__getopt.c
+name			    cfengine3
+version			    3.0.2
+revision		    1
+categories		    sysutils
+maintainers		    FaerieMUD.org:ged
+description		    network configuration-management tool
+long_description    a tool for setting up and maintaining BSD and System-5-like operating \
+				    system optionally attached to a TCP/IP network. You can think of cfengine \
+				    as a very high level language, much higher level than Perl or shell: a \
+				    single statement can result in many hundreds of operations being performed \
+				    on multiple hosts. Cfengine is good at performing a lot of common system \
+				    administration tasks, and allows you to build on its strengths with your \
+				    own scripts. 
+homepage		    http://www.cfengine.org/
+master_sites	    http://www.cfengine.org/tarballs/
+checksums           md5     ba23adb8c54c2da13953d8b24f303430 \
+                    sha1    705bf0fa8032b495d67592b28f3c11784e619020 \
+                    rmd160  8de5dcd4d96ad76d159b412252528d08a6c9590b
+platforms		    darwin
+                    
+depends_lib		    port:db44 \
+				    port:openssl \
+				    port:pcre
+                    
 post-patch {
-	foreach manfile [glob ${worksrcpath}/doc/*.8] {
+	foreach manfile [glob ${worksrcpath}/docs/*.8] {
 		reinplace "s|/usr/local|${prefix}|g" $manfile
 		reinplace "s|/var/cfengine|${prefix}&|g" $manfile
 	}
@@ -137,6 +139,11 @@ variant psdocs {
 	destroot.args-delete	ps_DATA=
 }
 
+variant postgres {}
+variant ldap {}
+variant mysql {}
+variant graphviz {}
+
 platform darwin {
 	startupitem.create			yes
 	startupitem.name			Cfengine
@@ -152,3 +159,5 @@ platform darwin {
 	startupitem.stop-append		"/usr/bin/killall -SIGUSR1 cfservd 2>/dev/null"
 }
 
+
+# vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
