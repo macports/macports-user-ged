@@ -4,9 +4,9 @@ PortSystem		1.0
 
 name			    cfengine3
 version			    3.0.2
-revision		    1
+revision		    0
 categories		    sysutils
-maintainers		    FaerieMUD.org:ged
+maintainers		    ged
 description		    network configuration-management tool
 long_description    a tool for setting up and maintaining BSD and System-5-like operating \
 				    system optionally attached to a TCP/IP network. You can think of cfengine \
@@ -22,7 +22,7 @@ checksums           md5     ba23adb8c54c2da13953d8b24f303430 \
                     rmd160  8de5dcd4d96ad76d159b412252528d08a6c9590b
 platforms		    darwin
                     
-depends_lib		    port:db44 \
+depends_lib		    port:db48 \
 				    port:openssl \
 				    port:pcre
                     
@@ -146,7 +146,7 @@ variant graphviz {}
 
 platform darwin {
 	startupitem.create			yes
-	startupitem.name			Cfengine
+	startupitem.name			Cfengine3
 	startupitem.start			"\[ -x ${cfworkdir}/bin/cfservd \] && ${cfworkdir}/bin/cfservd"
 	startupitem.start-append	"\[ -x ${cfworkdir}/bin/cfenvd \] && ${cfworkdir}/bin/cfenvd -H"
 	startupitem.start-append	"\[ -x ${cfworkdir}/bin/cfexecd \] && ${cfworkdir}/bin/cfexecd"
