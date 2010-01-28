@@ -1,51 +1,86 @@
 # $Id$
 
-PortSystem 1.0
-name            openldap
-version         2.3.35
-revision        1
-categories      databases
-maintainers     landonf
-description     OpenLDAP Software 
+PortSystem 			1.0
+
+name            	openldap24
+conflicts			openldap
+version         	2.4.21
+revision        	0
+categories      	databases
+maintainers     	ged
+description     	OpenLDAP Software (2.4.x)
 long_description	OpenLDAP Software is an open source implementation \
-			of the Lightweight Directory Access Protocol.  
+					of the Lightweight Directory Access Protocol.  
 
-platforms       darwin
-homepage	http://www.openldap.org/
-master_sites	ftp://ftp.OpenLDAP.org/pub/OpenLDAP/openldap-release/ \
-		http://www.openldap.org/software/download/OpenLDAP/openldap-release/ \
-		ftp://ftp.nl.uu.net/pub/unix/db/openldap/openldap-release/
-distfiles	${name}-${version}.tgz
-checksums	md5 91ae33b88bce17a48743da35a0aa04fd
+platforms       	darwin
+homepage			http://www.openldap.org/
+master_sites		ftp://ftp.OpenLDAP.org/pub/OpenLDAP/openldap-release/ \
+					http://www.openldap.org/software/download/OpenLDAP/openldap-release/ \
+					ftp://ftp.nl.uu.net/pub/unix/db/openldap/openldap-release/
+distfiles			openldap-${version}.tgz
+checksums           md5     e7128c57b2bacd940e8906057c94ff26 \
+                    sha1    cfcfff3df7804bab8eb0d9464d3712a3e32d677b \
+                    rmd160  94f662e8fe1b009f5836cb9c19b095f1b159b1bd
 
-depends_lib	path:bin/perl:perl5 \
-		port:cyrus-sasl2 \
-		port:openssl \
-		port:db44
+depends_lib			path:bin/perl:perl5 \
+					port:cyrus-sasl2 \
+					port:openssl \
+					port:db47
 
-patchfiles	patch-ltmain
+worksrcdir			openldap-${version}
+
+patchfiles			patch-ltmain
+patch.pre_args		-p1
 
 configure.env-append		LANG=C
-configure.cppflags-append	"-I${prefix}/include/db44 -I${prefix}/include/openssl -DBIND_8_COMPAT"
-configure.ldflags-append	-L${prefix}/lib/db44
+configure.cppflags-append	"-I${prefix}/include/db47 -I${prefix}/include/openssl -DBIND_8_COMPAT"
+configure.ldflags-append	-L${prefix}/lib/db47
 
-configure.args	--mandir=${prefix}/share/man \
-		--localstatedir=${prefix}/var \
-		--with-cyrus-sasl \
-		--with-tls \
-		--enable-crypt \
-		--enable-wrappers \
-		--enable-syncprov \
-                --enable-ipv6
+configure.args		--mandir=${prefix}/share/man \
+					--localstatedir=${prefix}/var \
+					--with-cyrus-sasl \
+					--with-tls \
+					--enable-crypt \
+					--enable-wrappers \
+					--enable-syncprov \
+                	--enable-ipv6
 
-startupitem.create      yes
-startupitem.name	slapd
+startupitem.create	yes
+startupitem.name	slapd24
 startupitem.init	"PID=${prefix}/var/run/slapd.pid"
-startupitem.start       "${prefix}/libexec/slapd -u ldap -f ${prefix}/etc/openldap/slapd.conf"
-startupitem.stop        "\[ -r \${PID} \] && kill \$(cat \${PID})"
+startupitem.start	"${prefix}/libexec/slapd -u ldap -f ${prefix}/etc/openldap/slapd.conf"
+startupitem.stop	"\[ -r \${PID} \] && kill \$(cat \${PID})"
 
-variant aci {
-        configure.args-append --enable-aci
+variant aci description "enable per-object ACIs (experimental)" {
+	configure.args-append --enable-aci=mod
+}
+
+variant backends description "enable all available backends (as modules)" {
+	configure.args-append	\
+    	--enable-dnssrv=mod	\
+    	--enable-ldap=mod	\
+    	--enable-meta=mod	\
+    	--enable-null=mod	\
+    	--enable-passwd=mod	\
+    	--enable-shell=mod	\
+    	--enable-sock=mod	\
+    	--enable-sql=mod
+}
+
+variant mysql description "enable MySQL NDB Cluster backend" {
+	configure.args-append	--enable-ndb=mod
+	depends_lib-append		port:mysql5
+}
+
+variant perl description "enable perl backend" {
+	configure.args-append	--enable-perl=mod
+	depends_lib-append		port:perl5
+}
+
+variant overlays description "enable all available overlays (as modules)" {
+	configure.args-append	\
+		--enable-overlays=mod \
+		--enable-syncprov=yes
 }
 
 pre-build {
