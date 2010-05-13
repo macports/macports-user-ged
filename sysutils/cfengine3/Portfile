@@ -19,7 +19,7 @@ long_description	a suite of programs for integrated autonomic \
 					of cfengine2’s approach. 
 homepage			http://www.cfengine.org/
 distfiles			cfengine-${version}.tar.gz
-master_sites		"http://www.cfengine.org/tarballs/download.php?file=${distfiles}"
+master_sites		http://www.cfengine.org/tarballs/
 checksums           md5     877ff961b445c1b7ddd6994ab8009433 \
                     sha1    71c6c41bc717a03df6db8585e11a673415f1f94c \
                     rmd160  6c7507d72b646b055b82513c943cecd237430072
